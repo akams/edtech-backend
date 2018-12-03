@@ -1,0 +1,37 @@
+{
+  "name": "edtech-backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "DEV_ENV=localhost node ./bin/www",
+    "docker": "DEV_ENV=mongo node ./bin/www",
+    "build prod": "DEV_ENV=pro node ./bin/www",
+    "lint": "eslint src/**",
+    "test-cover": "istanbul cover --include-all-sources spec/specs.js && istanbul check-coverage"
+  },
+  "dependencies": {
+    "async": "^2.6.1",
+    "bcrypt": "^3.0.2",
+    "body-parser": "^1.18.3",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "http-errors": "~1.6.2",
+    "jsonwebtoken": "^8.3.0",
+    "mongodb": "^3.1.8",
+    "morgan": "~1.9.0",
+    "pug": "2.0.0-beta11"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "chai": "^4.2.0",
+    "istanbul": "^0.4.5",
+    "jasmine": "^3.3.0",
+    "jasmine-console-reporter": "^3.1.0",
+    "jasmine-node": "^1.16.2",
+    "jasmine-supertest": "^1.0.0",
+    "mocha": "^5.2.0",
+    "supertest": "^3.3.0"
+  }
+}
