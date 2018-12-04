@@ -6,8 +6,10 @@ var CONSTANT      = require('../../config/constant');
 var StudentModel  = require('../../models/student');
 
 exports.register = function(req, response) {
+  console.log('start register');
   const errors = { error: [] };
   const params = createBody(req);
+  console.log('extract params ==>', params);
   const msgErrors = validatorData(params, errors);
   if (msgErrors.length !== 0) {
     errors.error = msgErrors;
@@ -15,6 +17,7 @@ exports.register = function(req, response) {
   }
   asyncLib.waterfall([
     function(done) {
+      console.log('request user ==>', params);
       const { email, username } = params;
       const request = { $or: [
         { email: email },
@@ -22,6 +25,7 @@ exports.register = function(req, response) {
       };
       StudentModel.find(request)
         .then(function(userFound) {
+          console.log('user found ==>', userFound);
           done(null, userFound);
         })
         .catch(function(err) {
@@ -30,8 +34,10 @@ exports.register = function(req, response) {
     },
     function(userFound, done) {
       if (!userFound) {
+        console.log('create pass ==>');
         const { password } = params;
         bcrypt.hash(password, 5, function( err, bcryptedPassword ) {
+          console.log('create pass ==> success');
           done(null, userFound, bcryptedPassword);
         });
       } else {
@@ -39,6 +45,7 @@ exports.register = function(req, response) {
       }
     },
     function(userFound, bcryptedPassword, done) {
+      console.log('start insert data');
       const cloneParams = Object.assign({}, params);
       delete cloneParams.password;
       cloneParams.billing.status = "IN_PROGRESS";
@@ -48,8 +55,10 @@ exports.register = function(req, response) {
         password: bcryptedPassword,
         isAdmin: 0
       }
+      console.log('data ==> ', cloneParams);
       StudentModel.insert(data)
       .then(function(newUser) {
+        console.log('success create ==>', newUser.result);
         done(newUser);
       })
       .catch(function(err) {
@@ -58,8 +67,9 @@ exports.register = function(req, response) {
     }
   ], function(newUser) {
     if (newUser) {
+      console.log('success register ==>', newUser.insertedId);
       return response.json({
-        'userId': newUser.insertedId
+        'userId': newUser.result
       });
     } else {
       return response.status(500).json({ 'error': 'cannot add user' });
@@ -80,17 +90,17 @@ function createBody(req) {
     birthDate: req.body.birthDate,
     email: req.body.email,
     geoloc: {
-      country: req.body.geoloc.country,
-      city: req.body.geoloc.city || '',
-      cp: req.body.geoloc.CP || '',
-      address: req.body.geoloc.address || '',
+      country: req.body.country,
+      city: req.body.city || '',
+      cp: req.body.cp || '',
+      address: req.body.address || '',
     },
     billing: {
-      type: req.body.billing.type,
+      type: req.body.type,
     },
     subscribeYear: {
-      degree: req.body.subscribeYear.degree,
-      promoYear: req.body.subscribeYear.promoYear,
+      degree: req.body.degree,
+      promoYear: req.body.promoYear,
     },
   }
 }
