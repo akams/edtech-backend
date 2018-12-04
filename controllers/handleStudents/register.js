@@ -15,8 +15,12 @@ exports.register = function(req, response) {
   }
   asyncLib.waterfall([
     function(done) {
-      const { email, username, firstName, lastName } = params;
-      StudentModel.find({ email: email })
+      const { email, username } = params;
+      const request = { $or: [
+        { email: email },
+        { username: username }] 
+      };
+      StudentModel.find(request)
         .then(function(userFound) {
           done(null, userFound);
         })

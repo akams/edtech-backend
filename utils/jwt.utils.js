@@ -8,9 +8,11 @@ module.exports = {
   generateTokenForUser: function(userData, option = {
     expiresIn: '1h'
   }) {
+    const safeData = Object.assign({}, userData);
+    delete safeData.password;
+    delete safeData._id;
     return jwt.sign({
-      userId: userData._id,
-      isAdmin: userData.isAdmin
+      ...safeData,
     },
     process.env.JWT_SECRET || JWT_SIGN_SECRET,
     option
@@ -19,7 +21,19 @@ module.exports = {
   parseAuthorization: function(authorization) {
     return (authorization != null) ? authorization.replace('Bearer ', '') : null;
   },
-  getUserId: function(authorization) {
+  getStudentId: function(authorization) {
+    var studentUid = -1;
+    var token = module.exports.parseAuthorization(authorization);
+    if(token != null) {
+      try {
+        var jwtToken = jwt.verify(token, process.env.JWT_SECRET || JWT_SIGN_SECRET);
+        if(jwtToken != null)
+        studentUid = jwtToken.studentUid;
+      } catch(err) { }
+    }
+    return studentUid;
+  },
+  getTeacherId: function(authorization) {
     var userId = -1;
     var token = module.exports.parseAuthorization(authorization);
     if(token != null) {
