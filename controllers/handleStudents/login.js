@@ -63,7 +63,6 @@ function createBody(req) {
 }
 
 function validatorData(params) {
-  console.log({params});
   const msgErrors = [];
   if (!params.username === true|| !params.password === true || !params.studentUid === true) {
     msgErrors.push('missing parameters');

@@ -41,16 +41,15 @@ app.use(function(req, res, next) {
   var token = req.headers['authorization'];
   if (!token) return next();
 
-  var studentUid = jwtUtils.getStudentId(token);
+  var studentUID = jwtUtils.getStudentId(token);
   // var studentUid = jwtUtils.getTeacherId(token);
-
-  if (studentUid === -1) {
+  if (studentUID === -1) {
     return res.status(401).json({
       success: false,
       message: 'Please register Log in'
     });
   } else {
-    req.studentUid = studentUid;
+    req.studentUID = studentUID;
     next();
   }
 });

@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
 });
 router.post('/register/', studentCtrl.register);
 router.post('/login/', studentCtrl.login);
-// router.get('/logout/', usersCtrl.logout);
-// router.get('/me/from/token', usersCtrl.getUserCredentials);
+router.get('/logout/', studentCtrl.logout);
+router.get('/me/from/token', studentCtrl.getUserCredentials);
 
 module.exports = router;
