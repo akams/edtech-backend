@@ -1,20 +1,20 @@
 var jwtUtils      = require('../../utils/jwt.utils');
-var StudentModel  = require('../../models/student');
+var TeacherModel  = require('../../models/teacher');
 
 exports.getUserCredentials = async function(req, response) {
   console.log('start get user credentials');
-  const studentUID = req.studentUID;
-  if (!studentUID) {
+  const teacherUUID = req.teacherUUID;
+  if (!teacherUUID) {
     return response.status(401).json({
       success: false,
       message: 'Please register Log in'
     });
   }
-  return StudentModel.find({ studentUid: studentUID })
+  return TeacherModel.find({ teacherUUID: teacherUUID })
     .then(function(userFound) {
       console.log('success get user credentials');
       const safeData = Object.assign({}, userFound);
-      safeData.isStudent = true;
+      safeData.isTeacher = true;
       return response.status(201).json({
         'token': jwtUtils.generateTokenForUser(safeData)
       });

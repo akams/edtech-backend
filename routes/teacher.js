@@ -1,6 +1,6 @@
 var express       = require('express');
 var router        = express.Router();
-var studentCtrl   = require('../controllers/studentCtrl');
+var teacherCtrl   = require('../controllers/teacherCtrl');
 var jwtUtils      = require('../utils/jwt.utils');
 
 //middleware that checks if JWT token exists and verifies it if it does exist.
@@ -10,15 +10,15 @@ router.use(function(req, res, next) {
   var token = req.headers['authorization'];
   if (!token) return next();
 
-  var studentUID = jwtUtils.getStudentId(token);
-  if (studentUID === -1) {
+  var teacherUUID = jwtUtils.getTeacherId(token);
+  if (teacherUUID === -1) {
     return res.status(401).json({
       success: false,
       message: 'Please register Log in'
     });
   } 
   else {
-    req.studentUID = studentUID;
+    req.teacherUUID = teacherUUID;
     next();
   }
 });
@@ -27,9 +27,9 @@ router.use(function(req, res, next) {
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
-router.post('/register/', studentCtrl.register);
-router.post('/login/', studentCtrl.login);
-router.get('/logout/', studentCtrl.logout);
-router.get('/me/from/token', studentCtrl.getUserCredentials);
+router.post('/register/', teacherCtrl.register);
+router.post('/login/', teacherCtrl.login);
+router.get('/me/from/token', teacherCtrl.getUserCredentials);
+router.get('/logout/', teacherCtrl.logout);
 
 module.exports = router;

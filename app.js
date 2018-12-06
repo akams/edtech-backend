@@ -34,26 +34,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-//middleware that checks if JWT token exists and verifies it if it does exist.
-//In all the future routes, this helps to know if the request is authenticated or not.
-app.use(function(req, res, next) {
-  // check header or url parameters or post parameters for token
-  var token = req.headers['authorization'];
-  if (!token) return next();
-
-  var studentUID = jwtUtils.getStudentId(token);
-  // var studentUid = jwtUtils.getTeacherId(token);
-  if (studentUID === -1) {
-    return res.status(401).json({
-      success: false,
-      message: 'Please register Log in'
-    });
-  } else {
-    req.studentUID = studentUID;
-    next();
-  }
-});
-
 app.use('/', indexRouter);
 app.use('/api/v1', apiRouter);
 

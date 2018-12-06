@@ -34,15 +34,15 @@ module.exports = {
     return studentUid;
   },
   getTeacherId: function(authorization) {
-    var userId = -1;
+    var teacherUUID = -1;
     var token = module.exports.parseAuthorization(authorization);
     if(token != null) {
       try {
         var jwtToken = jwt.verify(token, process.env.JWT_SECRET || JWT_SIGN_SECRET);
         if(jwtToken != null)
-          userId = jwtToken.userId;
+        teacherUUID = jwtToken.teacherUUID;
       } catch(err) { }
     }
-    return userId;
+    return teacherUUID;
   }
 }
