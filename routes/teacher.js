@@ -1,5 +1,19 @@
 var express       = require('express');
 var router        = express.Router();
+var multer        = require('multer');
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/teacher/')
+  },
+  filename: function (req, file, cb) {
+    console.log('storage' , file)
+    cb(null, Date.now()+ file.originalname)
+  }
+});
+var upload = multer({ storage: storage})
+
+
 var teacherCtrl   = require('../controllers/teacherCtrl');
 var jwtUtils      = require('../utils/jwt.utils');
 
@@ -31,5 +45,6 @@ router.post('/register/', teacherCtrl.register);
 router.post('/login/', teacherCtrl.login);
 router.get('/me/from/token', teacherCtrl.getUserCredentials);
 router.get('/logout/', teacherCtrl.logout);
+router.post('/upload-file/', upload.any(), teacherCtrl.uploadFile);
 
 module.exports = router;

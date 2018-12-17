@@ -15,5 +15,14 @@ module.exports = {
   },
   logout: function(req, res, next) {
     return handleLogoutTeacher.logout(req, res);
+  },
+  uploadFile: function(req, res, next) {
+    // req.files is array of `photos` files
+    console.log('req.files', req.files);
+    if (req.files) { 
+      console.dir(req.files);
+      return res.end('Success upload.');
+    }
+    return res.end('Missing file.'); 
   }
 };
