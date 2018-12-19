@@ -1,7 +1,20 @@
 var express       = require('express');
 var router        = express.Router();
-var teacherCtrl   = require('../controllers/teacherCtrl');
-var jwtUtils      = require('../utils/jwt.utils');
+var multer        = require('multer');
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/teacher/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now()+ file.originalname)
+  }
+});
+var upload = multer({ storage: storage})
+
+
+var courseCtrl  = require('../controllers/courseCtrl');
+var jwtUtils    = require('../utils/jwt.utils');
 
 //middleware that checks if JWT token exists and verifies it if it does exist.
 //In all the future routes, this helps to know if the request is authenticated or not.
@@ -27,9 +40,9 @@ router.use(function(req, res, next) {
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
-router.post('/register/', teacherCtrl.register);
-router.post('/login/', teacherCtrl.login);
-router.get('/me/from/token', teacherCtrl.getUserCredentials);
-router.get('/logout/', teacherCtrl.logout);
+router.post('/upload-file/', upload.any(), courseCtrl.uploadFile);
+// Course
+router.post('/', courseCtrl.postCourse);
+
 
 module.exports = router;
